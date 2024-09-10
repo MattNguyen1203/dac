@@ -1,26 +1,33 @@
-# version: '3'
+version: '3.9'
 
-# services:
-#   dac-next:
-#     container_name: dac
-#     image: ngotheson/dac:latest
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#       args:
-#         NEXT_PUBLIC_API: ${NEXT_PUBLIC_API}
-#         NEXT_PUBLIC_REVALIDATE: ${NEXT_PUBLIC_REVALIDATE}
-#         DOMAIN: ${DOMAIN}
-#     restart: always
-#     ports:
-#       - 3001:3000
-#     networks:
-#       - dacnetwork
+services:
+  next-app:
+    container_name: dac
+    image: okhubvn/dac:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API: ${NEXT_PUBLIC_API}
+        NEXT_PUBLIC_REVALIDATE: ${NEXT_PUBLIC_REVALIDATE}
+        DOMAIN: ${DOMAIN}
+        NEXT_PUBLIC_APIKEY: ${NEXT_PUBLIC_APIKEY}
+        NEXT_PUBLIC_AUTHDOMAIN: ${NEXT_PUBLIC_AUTHDOMAIN}
+        NEXT_PUBLIC_PROJECTID: ${NEXT_PUBLIC_PROJECTID}
+        NEXT_PUBLIC_STORAGEBUCKET: ${NEXT_PUBLIC_STORAGEBUCKET}
+        NEXT_PUBLIC_MESSAGINGSENDERID: ${NEXT_PUBLIC_MESSAGINGSENDERID}
+        NEXT_PUBLIC_APPID: ${NEXT_PUBLIC_APPID}
 
-#   # Add more containers below (nginx, postgres, etc.)
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - dacnetwork
 
-# # Define a network, which allows containers to communicate
-# # with each other, by using their container name as a hostname
-# networks:
-#   dacnetwork:
-#     external: true
+  # Add more containers below (nginx, postgres, etc.)
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  dacnetwork:
+    external: true

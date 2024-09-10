@@ -16,8 +16,8 @@ const nextConfig = {
     loader: 'custom',
     loaderFile: './loader.js'
   },
-  staticPageGenerationTimeout: 1000
-  // output: 'standalone'
+  staticPageGenerationTimeout: 1000,
+  output: 'standalone'
 }
 
 module.exports = nextConfig
