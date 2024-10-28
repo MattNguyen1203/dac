@@ -13,6 +13,10 @@ const GET_DATA_NEWS_DETAIL = `query ($language: LanguageCodeEnum!, $slug: ID!) {
             altText
             sourceUrl
           }
+          backgroundMobile {
+            altText
+            sourceUrl
+          }
         }
         content {
           heading
@@ -29,13 +33,18 @@ const GET_DATA_NEWS_DETAIL = `query ($language: LanguageCodeEnum!, $slug: ID!) {
         othernews {
           ... on Post {
             slug
-            news{
+            news {
               name
             }
-            featuredImage{
-              node{
+            featuredImage {
+              node {
                 sourceUrl
                 altText
+              }
+            }
+            categories {
+              nodes {
+                slug
               }
             }
           }
@@ -45,114 +54,131 @@ const GET_DATA_NEWS_DETAIL = `query ($language: LanguageCodeEnum!, $slug: ID!) {
   }
 }`
 
-
-const GET_ALL_NEWS = gql` 
-query getAllNews($language: LanguageCodeEnum!, $offset: Int!, $size: Int!) {
-    posts(where: {
-      offsetPagination: {offset: $offset,size:$size}
-        orderby:{field:DATE, order:ASC}		
-        }
-    ){
-      nodes{
-        translation(language:$language){
+const GET_ALL_NEWS = gql`
+  query getAllNews($language: LanguageCodeEnum!, $offset: Int!, $size: Int!) {
+    posts(where: { offsetPagination: { offset: $offset, size: $size }, orderby: { field: DATE, order: ASC } }) {
+      nodes {
+        translation(language: $language) {
           id
           slug
-          featuredImage{
-            node{
+          featuredImage {
+            node {
               altText
               sourceUrl
             }
           }
-          news{
+          news {
             time
             name
           }
         }
       }
-      pageInfo{
-        offsetPagination{
+      pageInfo {
+        offsetPagination {
           total
         }
       }
     }
-}`
+  }
+`
 
-const DATA_BY_SEARCH_TEXT = gql`query ($text: String!, $language: LanguageCodeEnum!,$offset: Int!, $size: Int!) {
-  posts(where: {search:$text,offsetPagination:{offset:$offset,size:$size} orderby:{field:DATE,order:DESC}}){
-    nodes{
-      translation(language:$language){
+const DATA_BY_SEARCH_TEXT = gql`
+  query ($text: String!, $language: LanguageCodeEnum!, $offset: Int!, $size: Int!) {
+    posts(
+      where: {
+        search: $text
+        offsetPagination: { offset: $offset, size: $size }
+        orderby: { field: DATE, order: DESC }
+      }
+    ) {
+      nodes {
+        translation(language: $language) {
+          slug
+          featuredImage {
+            node {
+              altText
+              sourceUrl
+            }
+          }
+          news {
+            name
+            time
+          }
+        }
+      }
+      pageInfo {
+        offsetPagination {
+          total
+        }
+      }
+    }
+  }
+`
+const GET_DATA_ALL_WITH_SEARCH = gql`
+  query getData($text: String!, $language: LanguageCodeFilterEnum!, $offset: Int!, $size: Int!) {
+    posts(
+      where: {
+        language: $language
+        search: $text
+        offsetPagination: { offset: $offset, size: $size }
+        orderby: { field: DATE, order: DESC }
+      }
+    ) {
+      nodes {
+        id
         slug
-        featuredImage{
-          node{
+        featuredImage {
+          node {
             altText
             sourceUrl
           }
         }
-        news{
-          name
+        news {
           time
+          name
+        }
+      }
+      pageInfo {
+        offsetPagination {
+          total
         }
       }
     }
-    pageInfo{
-      offsetPagination{
-        total
-      }
-    }
   }
-}`
-const GET_DATA_ALL_WITH_SEARCH = gql`query getData($text: String!, $language: LanguageCodeFilterEnum!, $offset: Int!, $size: Int!) {
-  posts(
-    where: {language: $language, search: $text, offsetPagination: {offset: $offset, size: $size}, orderby: {field: DATE, order: DESC}}
-  ) {
-    nodes {
-      id
-      slug
-      featuredImage {
-        node {
-          altText
-          sourceUrl
-        }
-      }
-      news {
-        time
-        name
-      }
-    }
-    pageInfo {
-      offsetPagination {
-        total
-      }
-    }
-  }
-}`
+`
 
-const DATA_NEWS_WITH_SEARCH_AND_CATEGORY = gql `
-query getData($text: String!, $language: LanguageCodeFilterEnum!, $offset: Int!, $size: Int!,$term:[String!]) {
-  posts(
-    where: {language: $language, search: $text, offsetPagination: {offset: $offset, size: $size}, orderby: {field: DATE, order: DESC}, taxQuery: {taxArray: {field: SLUG, taxonomy: CATEGORY, operator: IN, terms: $term}}}
-  ) {
-    nodes {
-      id
-      slug
-      featuredImage {
-        node {
-          altText
-          sourceUrl
+const DATA_NEWS_WITH_SEARCH_AND_CATEGORY = gql`
+  query getData($text: String!, $language: LanguageCodeFilterEnum!, $offset: Int!, $size: Int!, $term: [String!]) {
+    posts(
+      where: {
+        language: $language
+        search: $text
+        offsetPagination: { offset: $offset, size: $size }
+        orderby: { field: DATE, order: DESC }
+        taxQuery: { taxArray: { field: SLUG, taxonomy: CATEGORY, operator: IN, terms: $term } }
+      }
+    ) {
+      nodes {
+        id
+        slug
+        featuredImage {
+          node {
+            altText
+            sourceUrl
+          }
+        }
+        news {
+          time
+          name
         }
       }
-      news {
-        time
-        name
-      }
-    }
-    pageInfo {
-      offsetPagination {
-        total
+      pageInfo {
+        offsetPagination {
+          total
+        }
       }
     }
   }
-}
 `
 const GET_META_NEWS = `
 query($language: LanguageCodeEnum!){
@@ -208,7 +234,7 @@ const NEWS_QUERY = `query($language:LanguageCodeEnum!){
   }
 }`
 
-const SLUG_BLOG_QUERY =(id)=> `{
+const SLUG_BLOG_QUERY = (id) => `{
   page(id:"${id}"){
     language{
       code
@@ -222,7 +248,7 @@ const SLUG_BLOG_QUERY =(id)=> `{
     }
   }
 }`
- const SLUG_BLOG_DETAIL_QUERY =(id)=> `{
+const SLUG_BLOG_DETAIL_QUERY = (id) => `{
   post(id: "${id}", idType: ID) {
     language {
       code
@@ -238,27 +264,33 @@ const SLUG_BLOG_QUERY =(id)=> `{
 }`
 
 const NEWS_SEARCH_INPUT_QUERY = gql`
-query getData($text: String!, $language: LanguageCodeFilterEnum!, $offset: Int!, $size: Int!, $term: [String!]) {
-  posts(
-    where: {language: $language, search: $text, offsetPagination: {size: $size, offset: $offset}, orderby: {field: DATE, order: DESC}, taxQuery: {taxArray: {field: SLUG, taxonomy: CATEGORY, operator: IN, terms: $term}}}
-  ) {
-    nodes {
-      featuredImage {
-        node {
-          altText
-          sourceUrl
-        }
+  query getData($text: String!, $language: LanguageCodeFilterEnum!, $offset: Int!, $size: Int!, $term: [String!]) {
+    posts(
+      where: {
+        language: $language
+        search: $text
+        offsetPagination: { size: $size, offset: $offset }
+        orderby: { field: DATE, order: DESC }
+        taxQuery: { taxArray: { field: SLUG, taxonomy: CATEGORY, operator: IN, terms: $term } }
       }
-      slug
-      title
-      categories{
-        nodes{
-          slug
+    ) {
+      nodes {
+        featuredImage {
+          node {
+            altText
+            sourceUrl
+          }
+        }
+        slug
+        title
+        categories {
+          nodes {
+            slug
+          }
         }
       }
     }
   }
-}
 `
 
 const ALL_NEW_V2_QUERY = `
@@ -284,32 +316,38 @@ query getAllNewsV2($language: LanguageCodeFilterEnum!, $term: [String!]) {
 }`
 
 const ALL_NEWS_SEARCH_V2 = gql`
-query getData($text: String!, $language: LanguageCodeFilterEnum!, $term: [String!]) {
-  posts(
-    where: {language: $language, search: $text, orderby: {field: DATE, order: DESC}, taxQuery: {taxArray: {field: SLUG, taxonomy: CATEGORY, operator: IN, terms: $term}}}
-    first: 100
-  ) {
-    nodes {
-      featuredImage {
-        node {
-          altText
-          sourceUrl
+  query getData($text: String!, $language: LanguageCodeFilterEnum!, $term: [String!]) {
+    posts(
+      where: {
+        language: $language
+        search: $text
+        orderby: { field: DATE, order: DESC }
+        taxQuery: { taxArray: { field: SLUG, taxonomy: CATEGORY, operator: IN, terms: $term } }
+      }
+      first: 100
+    ) {
+      nodes {
+        featuredImage {
+          node {
+            altText
+            sourceUrl
+          }
         }
-      }
-      news{
-        time
-        name
-      }
-      slug
-      title
-      categories {
-        nodes {
-          slug
+        news {
+          time
+          name
+        }
+        slug
+        title
+        categories {
+          nodes {
+            slug
+          }
         }
       }
     }
   }
-}`
+`
 export {
   NEWS_QUERY,
   GET_DATA_NEWS_DETAIL,
