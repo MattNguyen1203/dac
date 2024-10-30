@@ -21,9 +21,13 @@ function Banner({
   textAboutUs
 }) {
   const [click, setClick] = useState(false)
+  const [isClient, setIsClient] = useState(false)
   const isMobile = useMediaQuery({ query: '(max-width: 767.9px)' })
   const refScroll = useRef()
   gsap.registerPlugin(ScrollToPlugin)
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY === 0 && click) {
@@ -46,15 +50,17 @@ function Banner({
         id={id}
         className={`banner_home md:w-full md:h-[70vh] lg:h-[100vh] h-[100rem] relative ${background}`}
       >
-        <Image
-          src={isMobile && imageMb ? imageMb : image}
-          priority
-          alt={isMobile && altTextMb ? altTextMb : altText || 'banner'}
-          width={1800}
-          height={1000}
-          quality={100}
-          className='w-full h-full md:rounded-br-[13.54rem] rounded-br-[16rem] object-cover '
-        />
+        {isClient && (
+          <Image
+            src={isMobile && imageMb ? imageMb : image}
+            priority
+            alt={isMobile && altTextMb ? altTextMb : altText || 'banner'}
+            width={1800}
+            height={1000}
+            quality={100}
+            className='w-full h-full md:rounded-br-[13.54rem] rounded-br-[16rem] object-cover '
+          />
+        )}
         <div
           className='overlay absolute top-0 w-full h-[16rem]'
           style={{ background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 255, 255, 0.00) 89.06%)' }}
