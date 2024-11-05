@@ -13,7 +13,7 @@ function ItemBlogMobile({ data, lang, dataSlide }) {
     <section className='md:hidden'>
       {dataOtherNews?.map((blog, index) => (
         <Link
-          href={`/${lang}/tin-tuc-su-kien/${blog?.slug}`}
+          href={`/${lang}/tin-tuc-su-kien/${blog?.categories?.nodes[0]?.slug}/${blog?.slug}`}
           key={index}
           className={`flex flex-shrink-0 flex-col md:mr-[2.6rem]`}
         >
