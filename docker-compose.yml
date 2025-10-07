@@ -4,6 +4,7 @@ services:
   next-app:
     container_name: dac
     image: okhubvn/dac:latest
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
@@ -24,7 +25,7 @@ services:
     networks:
       - dacnetwork
 
-  # Add more containers below (nginx, postgres, etc.)
+# Add more containers below (nginx, postgres, etc.)
 
 # Define a network, which allows containers to communicate
 # with each other, by using their container name as a hostname

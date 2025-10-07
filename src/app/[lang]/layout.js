@@ -12,6 +12,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/thumbs";
 import "swiper/css/free-mode";
+import Script from "next/script";
 import NavbarData from "@/components/common/NavbarData";
 import SocialAction from "@/components/common/SocialAction";
 import ScrollUp from "@/components/common/ScrollUp";
@@ -34,9 +35,24 @@ export function generateViewport() {
 
 export default async function RootLayout({ children, params }) {
   let lang = params.lang;
-  const listJob = await fetchData(POPUP_JOB_QUERY,{language:lang?.toUpperCase()})
+  const listJob = await fetchData(POPUP_JOB_QUERY, { language: lang?.toUpperCase() })
   return (
     <html lang={lang}>
+      <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-KV106R6GSL"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-KV106R6GSL');
+          `}
+        </Script>
+      </head>
       <body>
         <ApolloClientProvider>
           <NavbarData lang={lang} />
@@ -49,7 +65,7 @@ export default async function RootLayout({ children, params }) {
           <ScrollUp />
           <div id="smooth-wrapper">
             <div id="smooth-content">
-              <GsapSmoother lang={lang}/>
+              <GsapSmoother lang={lang} />
               {children}
               <FooterData lang={lang} />
             </div>
