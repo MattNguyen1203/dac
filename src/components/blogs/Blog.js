@@ -23,7 +23,7 @@ function Blog({ lang, dataBlog, slug, listSlug, dataNewsV2 }) {
   const seeMoreRef = useRef()
   const isMobile = useMediaQuery({ query: '(max-width: 767.9px)' })
   const [currentPage, setCurrentPage] = useState(page - 1 || 0)
-  const [postsPerPage, setPostsPerPage] = useState(isMobile ? 3 : 8)
+  const [postsPerPage, setPostsPerPage] = useState(isMobile ? 3 : 9)
   const lastPostIndex = (isMobile ? number + 1 : currentPage + 1) * postsPerPage
   const firstPostIndex = lastPostIndex - postsPerPage
   const dataSearch = dataNewsV2?.data?.posts?.nodes?.filter((item) =>
@@ -51,7 +51,7 @@ function Blog({ lang, dataBlog, slug, listSlug, dataNewsV2 }) {
     setNumber(number + 1)
   }
   const pageInfo = dataSearch && dataSearch?.length > 0 ? dataFinal?.length : dataNewsV2?.data?.posts?.nodes?.length
-  const totalPage = Math?.ceil(pageInfo / 8)
+  const totalPage = Math?.ceil(pageInfo / 9)
   const allNews =
     currentPosts?.length === 0
       ? dataNewsV2?.data?.posts?.nodes?.slice(isMobile ? 0 : firstPostIndex, lastPostIndex)
@@ -99,7 +99,7 @@ function Blog({ lang, dataBlog, slug, listSlug, dataNewsV2 }) {
       <HandleChangeSlug listSlug={listSlug} />
       <section
         ref={eleRef}
-        className='md:px-[4.17rem] containerWrapper max-md:mt-[4rem] blog_news md:pt-[3.13rem] md:pb-[2.97rem] max-md:flex flex-col-reverse'
+        className='md:px-[7.17rem] containerWrapper max-md:mt-[4rem] blog_news md:pt-[3.13rem] md:pb-[2.97rem] max-md:flex flex-col-reverse'
       >
         <span
           ref={seeMoreRef}
@@ -132,7 +132,7 @@ function Blog({ lang, dataBlog, slug, listSlug, dataNewsV2 }) {
           })}
         </div>
         {!allNews ? (
-          <div className='grid md:grid-cols-4 md:gap-x-[2.6rem] md:gap-y-[4.43rem] max-md:px-[4.27rem] md:mt-[2rem]'>
+          <div className='grid md:grid-cols-3 md:gap-x-[2.6rem] md:gap-y-[4.43rem] max-md:px-[4.27rem] md:mt-[2rem]'>
             {arrSke?.map((item, index) => {
               return (
                 <Loading
@@ -143,7 +143,7 @@ function Blog({ lang, dataBlog, slug, listSlug, dataNewsV2 }) {
             })}
           </div>
         ) : (
-          <div className='grid md:grid-cols-4 md:gap-x-[2.6rem] md:gap-y-[4.43rem] max-md:px-[4.27rem] md:mt-[2rem]'>
+          <div className='grid md:grid-cols-3 md:gap-x-[2.6rem] md:gap-y-[4.43rem] max-md:px-[4.27rem] md:mt-[2rem]'>
             {allNews?.map((item, index) => (
               <BlogItem
                 slug={slug}
